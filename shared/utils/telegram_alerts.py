@@ -12,7 +12,7 @@ def _send_telegram_message(text: str):
     """Internal function: Sends a Telegram message (runs inside thread)."""
     try:
         bot.send_message(
-            chat_id="-1002356666639",
+            chat_id="-1003065441059",
             text=text,
             parse_mode='HTML',
             disable_web_page_preview=True

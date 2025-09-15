@@ -34,3 +34,6 @@ class UserLoginSerializer(serializers.Serializer):
             raise CustomException(message_key="PAGE_NOT_FOUND")
         attrs['user'] = user
         return attrs
+
+class RefreshTokenSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField(required=True)

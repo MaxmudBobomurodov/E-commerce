@@ -1,12 +1,14 @@
 from django.contrib.auth.models import User
 from rest_framework import status
+from rest_framework.decorators import permission_classes
 from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from accounts.serializers import UserRegisterSerializer, UserLoginSerializer
+from accounts.serializers import UserRegisterSerializer, UserLoginSerializer, RefreshTokenSerializer
 from accounts.utils import get_tokens_for_user
 from shared.utils.custom_response import CustomResponse
 
@@ -50,22 +52,42 @@ class LoginAPIView(APIView):
             )
 
 
-class get_access_token(APIView):
+class GetAccessToken(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        refresh_token = request.GET.get('refresh_token')
+        serializer = RefreshTokenSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        refresh_token = serializer.validated_data['refresh_token']
 
         if refresh_token is None:
             return CustomResponse.error(
                 message_key='ERROR',
-                data=request.GET,
+                data={'detail': 'refresh_token is invalid'},
                 request=request
             )
         refresh = RefreshToken(refresh_token)
         access_token = str(refresh.access_token)
         return CustomResponse.success(
             message_key='SUCCESS',
-            data=access_token,
+            data={'access_token': access_token},
             request=request
         )
+
+class UserIsAuthenticated(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        if request.user.is_authenticated:
+            return CustomResponse.success(
+                message_key='SUCCESS',
+                data={'message': 'isAuthenticated', 'user': request.user.username},
+                request=request
+            )
+        else:
+            return CustomResponse.error(
+                message_key='ERROR',
+                data={'message': 'NotAuthenticated'},
+                request=request
+            )
