@@ -16,5 +16,14 @@ COMMON_MESSAGES = {
             "uz": "Muvaffaqqiyatli bajarildi.",
             "ru": "Успешно сделано."
         }
+    },
+    "BAD_REQUEST": {
+        "id": "BAD_REQUEST",
+        "status_code": 400,
+        "messages": {
+            "en": "products not enough.",
+            "uz": "Mahsulot yetarli emas.",
+            "ru": "Успешно сделано."
+        }
     }
 }

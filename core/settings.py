@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'accounts',
     'shared',
     'products',
+    'orders',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework.permissions.AllowAny',
     ),
     'EXCEPTION_HANDLER': 'shared.exceptions.handler.custom_exception_handler',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
