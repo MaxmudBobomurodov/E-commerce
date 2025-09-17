@@ -1,13 +1,16 @@
 from django.contrib.admin.templatetags.admin_list import pagination
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
+from django_filters.rest_framework import DjangoFilterBackend
 from requests import delete
+from rest_framework.filters import SearchFilter
 from rest_framework.generics import GenericAPIView, ListAPIView, get_object_or_404
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
 from unicodedata import category
 
+from products.filters import ProductFilter
 from products.models import Product, Category
 from products.serializers import ProductSerializer, CategorySerializer
 from shared.utils.custom_response import CustomResponse
@@ -156,14 +159,9 @@ class GetProductsAPIView(APIView):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
+class ProductFilterAPIView(ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend,SearchFilter]
+    filterset_class = ProductFilter
+    search_fields = ['name']

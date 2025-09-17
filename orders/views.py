@@ -1,4 +1,5 @@
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.views import APIView
 
 from cart.models import Cart, CartItem
@@ -11,7 +12,7 @@ from shared.utils.custom_response import CustomResponse
 class OrderAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request):
+    def get(self, request,admin):
         orders = Order.objects.filter(user=request.user)
         serializer = OrderSerializer(orders, many=True)
         return CustomResponse.success(message_key="SUCCESS", data=serializer.data, request=request)
@@ -46,3 +47,17 @@ class OrderAPIView(APIView):
 
         serializer = OrderSerializer(order)
         return CustomResponse.success(message_key="SUCCESS", data=serializer.data, request=request)
+
+class AdminOrderListView(ListAPIView):
+    queryset = Order.objects.all().select_related("user").prefetch_related("items")
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request, *args, **kwargs):
+        orders = self.get_queryset()
+        serializer = self.serializer_class(orders, many=True)
+        return CustomResponse.success(
+            message_key="SUCCESS",
+            data=serializer.data,
+            request=request
+        )
