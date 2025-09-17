@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from cart.models import Cart, CartItem
-from products.models import Product
 from shared.exceptions.custom_exceptions import CustomException
 
 

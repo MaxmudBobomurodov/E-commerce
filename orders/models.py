@@ -10,12 +10,12 @@ class Order(BaseModel):
         ("processing", "Processing"),
         ("shipped", "Shipped"),
         ("delivered", "Delivered"),
-        ("canceled", "Canceled"),
+        ("cancelled", "Cancelled"),
     ]
 
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    total_sum = models.DecimalField(max_digits=10, decimal_places=2)
+    total_sum = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
 
 

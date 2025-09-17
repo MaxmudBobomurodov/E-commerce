@@ -30,11 +30,20 @@ class GetCategoryAPIView(APIView):
 
     def get(self,request):
         category = Category.objects.all()
-        serializer = self.serializer_class(category, many=True)
+        paginator = PageNumberPagination()
+
+        result_page = paginator.paginate_queryset(category, request=request)
+
+        serializer = self.serializer_class(result_page, many=True)
 
         return CustomResponse.success(
             message_key="SUCCESS",
-            data=serializer.data,
+            data={
+                "count":paginator.page.paginator.count,
+                "next":paginator.get_next_link(),
+                "previous":paginator.get_previous_link(),
+                "results": serializer.data,
+            },
             request=request
         )
 
@@ -71,6 +80,7 @@ class GetCategoryAPIView(APIView):
 
 class GetProductsAPIView(APIView):
 
+
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
 
@@ -82,11 +92,20 @@ class GetProductsAPIView(APIView):
 
     def get(self,request):
         products = Product.objects.all()
-        serializer = self.serializer_class(products, many=True)
+        paginator = PageNumberPagination()
+        result_page = paginator.paginate_queryset(products, request)
+
+        serializer = self.serializer_class(result_page, many=True)
+
 
         return CustomResponse.success(
             message_key='SUCCESS',
-            data=serializer.data,
+            data={
+                "count":paginator.page.paginator.count,
+                "next":paginator.get_next_link(),
+                "previous":paginator.get_previous_link(),
+                "results": serializer.data,
+            },
             request=request
             )
     def post(self,request):

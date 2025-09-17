@@ -39,7 +39,7 @@ class OrderAPIView(APIView):
             item.product.save()
 
         order.total_sum = total
-        order.status = True
+
         product.quantity = total_quantity
         order.save()
 
