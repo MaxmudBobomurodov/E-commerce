@@ -13,7 +13,8 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
+    order_status = serializers.CharField(source="status")
 
     class Meta:
         model = Order
-        fields = ["id", "user", "total_sum", "status", "items"]
+        fields = ["id", "user", "total_sum", "order_status", "items"]

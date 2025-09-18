@@ -12,6 +12,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username','password1','password2']
 
+
+
     def create(self, validated_data):
         password = validated_data.pop('password1')
         validated_data.pop('password2')
@@ -20,6 +22,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()

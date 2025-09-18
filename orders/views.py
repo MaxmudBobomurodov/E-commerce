@@ -12,7 +12,7 @@ from shared.utils.custom_response import CustomResponse
 class OrderAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    def get(self, request,admin):
+    def get(self, request):
         orders = Order.objects.filter(user=request.user)
         serializer = OrderSerializer(orders, many=True)
         return CustomResponse.success(message_key="SUCCESS", data=serializer.data, request=request)

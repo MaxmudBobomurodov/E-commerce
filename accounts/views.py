@@ -20,14 +20,16 @@ class RegisterAPIView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return CustomResponse.success(
-            message_key='SUCCESS',
-            data=serializer.data,
-            request=request,
-            name='mahmud'
-        )
+        if serializer.is_valid():
+            serializer.save()
+            return CustomResponse.success(
+                message_key='SUCCESS',
+                data=serializer.data,
+                request=request,
+                name='mahmud'
+            )
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LoginAPIView(APIView):
@@ -88,6 +90,5 @@ class UserIsAuthenticated(APIView):
         else:
             return CustomResponse.error(
                 message_key='ERROR',
-                data={'message': 'NotAuthenticated'},
                 request=request
             )

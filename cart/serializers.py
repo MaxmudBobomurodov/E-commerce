@@ -17,7 +17,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         product = data.get("product")
-        requested_quantity = data.get("quantity")
+        requested_quantity = data.get("quantity",1)
 
         if product.quantity < requested_quantity:
             raise CustomException(
