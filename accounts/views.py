@@ -1,9 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import status
-from rest_framework.decorators import permission_classes
+
 from rest_framework.generics import CreateAPIView
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.permissions import AllowAny, IsAuthenticated
+
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -11,13 +11,22 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.serializers import UserRegisterSerializer, UserLoginSerializer, RefreshTokenSerializer
 from accounts.utils import get_tokens_for_user
 from shared.utils.custom_response import CustomResponse
-
+from drf_spectacular.utils import extend_schema
 
 class RegisterAPIView(CreateAPIView):
+
+
+
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
     permission_classes = [AllowAny]
 
+
+
+    @extend_schema(
+        request=UserRegisterSerializer,
+        responses={201: UserRegisterSerializer},
+        description="Foydalanuvchini ro‘yxatdan o‘tkazish")
     def create(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
@@ -77,6 +86,7 @@ class GetAccessToken(APIView):
             request=request
         )
 
+
 class UserIsAuthenticated(APIView):
     permission_classes = [AllowAny]
 
@@ -88,7 +98,4 @@ class UserIsAuthenticated(APIView):
                 request=request
             )
         else:
-            return CustomResponse.error(
-                message_key='ERROR',
-                request=request
-            )
+            return Response({"message": "NotAuthenticated"}, status=status.HTTP_401_UNAUTHORIZED)
